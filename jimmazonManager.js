@@ -40,7 +40,7 @@ function inquireInput() {
                 addInventory()
                 break;
             case "Add New Product":
-                console.log('Add New Product');
+                addProduct();
                 break;
             case "Quit":
                 console.log("Goodbye!");
@@ -71,6 +71,7 @@ function viewInventory() {
     inquireInput();
 }
 
+// display a prompt that will let the manager "add more" of any item currently in the store.
 function addInventory() {
     console.log('Add to Inventory');
     connection.query("SELECT * FROM `products`",
@@ -104,6 +105,44 @@ function addInventory() {
         });
 }
 
+// allow the manager to add a completely new product to the store.
 function addProduct() {
+    console.log('Add New Product');
+    connection.query("SELECT * FROM `products`",
+        function (err, res) {
+            var products = res;
+            console.table(products);
+            inquirer.prompt([
+                {
+                    type: "input",
+                    message: "Enter Product Name: ",
+                    name: "product_name"
+                },
+                {
+                    type: "input",
+                    message: "Enter Department Name: ",
+                    name: "department_name"
+                },
+                {
+                    type: "input",
+                    message: "Enter Price: ",
+                    name: "price"
+                },
+                {
+                    type: "input",
+                    message: "Enter Product Quantity: ",
+                    name: "stock_quantity"
+                }
+            ]).then(function (user) {
+                connection.query("INSERT INTO products SET ?", {
+                    product_name: user.product_name,
+                    department_name: user.department_name,
+                    price: user.price,
+                    stock_quantity: user.stock_quantity,
+                }, function (err, res) { });
+                console.log("New product has been added");
+                inquireInput();
+            });
+        });
 
 }

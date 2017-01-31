@@ -52,12 +52,26 @@ function inquireInput(products) {
             // update quantity in the database and display total cost based on user input
             var new_quantity = products[i].stock_quantity - user.item_quantity;
             var total_cost = products[i].price * user.item_quantity;
-            connection.query("UPDATE `products` SET ? WHERE ?",
+            console.log(total_cost);
+            console.log(products[i].product_sales);
+            var new_sales = total_cost + products[i].product_sales;
+
+            var query1 = "UPDATE products SET ? WHERE item_id = ?"
+            connection.query(query1,
                 [
-                    { stock_quantity: new_quantity },
-                    { item_id: user.item_id }
+                    {
+                        stock_quantity: new_quantity,
+                        product_sales: new_sales
+                    },
+                    user.item_id,
                 ], function (err, res) { });
-            console.log("Your total cost is: $" + total_cost);
+            console.log(new_quantity);
+            
+            console.log("Your total cost is: $" + parseFloat(total_cost).toFixed(2));
+
+            // var query2 = "UPDATE `departments` INNER JOIN `products` ON products.department_name = departments.department_name SET departments.total_sales = ? WHERE products.product_id = ?"
+            // connection.query(query2, [300, user.item_id],
+            //     function (err, res) { });
             displayItems();
         }
     });
