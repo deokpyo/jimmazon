@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
     // Your username
     user: "root",
     // Your password
-    password: "ejrvy1024",
+    password: "",
     database: "jimmazonDB"
 });
 connection.connect(function (err) {
@@ -139,6 +139,7 @@ function addProduct() {
                     department_name: user.department_name,
                     price: user.price,
                     stock_quantity: user.stock_quantity,
+                    product_sales: 0,
                 }, function (err, res) { });
                 console.log("New product has been added");
                 inquireInput();

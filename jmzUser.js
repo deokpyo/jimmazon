@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
     // Your username
     user: "root",
     // Your password
-    password: "ejrvy1024",
+    password: "",
     database: "jimmazonDB"
 });
 connection.connect(function (err) {
@@ -57,7 +57,6 @@ function inquireInput(products) {
             var query = "SELECT departments.over_head_costs, departments.quantity_sold, departments.total_sales  FROM `products` INNER JOIN `departments` ON products.department_name = departments.department_name WHERE products.item_id = ?"
             connection.query(query, user.item_id,
                 function (err, res) {
-                    console.table(res);
                     var overhead = res[0].over_head_costs;
                     var new_sold = res[0].quantity_sold + parseInt(user.item_quantity);
                     var total_sales = res[0].total_sales + new_sales;
