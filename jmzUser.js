@@ -52,27 +52,38 @@ function inquireInput(products) {
             // update quantity in the database and display total cost based on user input
             var new_quantity = products[i].stock_quantity - user.item_quantity;
             var total_cost = products[i].price * user.item_quantity;
-            console.log(total_cost);
-            console.log(products[i].product_sales);
             var new_sales = total_cost + products[i].product_sales;
-
-            var query1 = "UPDATE products SET ? WHERE item_id = ?"
-            connection.query(query1,
-                [
-                    {
-                        stock_quantity: new_quantity,
-                        product_sales: new_sales
-                    },
-                    user.item_id,
-                ], function (err, res) { });
-            console.log(new_quantity);
-            
-            console.log("Your total cost is: $" + parseFloat(total_cost).toFixed(2));
-
-            // var query2 = "UPDATE `departments` INNER JOIN `products` ON products.department_name = departments.department_name SET departments.total_sales = ? WHERE products.product_id = ?"
-            // connection.query(query2, [300, user.item_id],
-            //     function (err, res) { });
+            updateProducts(user.item_id, new_quantity, new_sales, total_cost);
+            var query = "SELECT departments.over_head_costs, departments.quantity_sold, departments.total_sales  FROM `products` INNER JOIN `departments` ON products.department_name = departments.department_name WHERE products.item_id = ?"
+            connection.query(query, user.item_id,
+                function (err, res) {
+                    console.table(res);
+                    var overhead = res[0].over_head_costs;
+                    var new_sold = res[0].quantity_sold + parseInt(user.item_quantity);
+                    var total_sales = res[0].total_sales + new_sales;
+                    updateDepartments(user.item_id, new_sold, total_sales);
+                });
             displayItems();
         }
     });
+}
+
+function updateProducts(id, quantity, sales, total) {
+    var query = "UPDATE products SET ? WHERE item_id = ?"
+    connection.query(query,
+        [
+            {
+                stock_quantity: quantity,
+                product_sales: sales
+            },
+            id,
+        ], function (err, res) { });
+    console.log("Your total cost is: $" + parseFloat(total).toFixed(2));
+}
+
+function updateDepartments(id, sold, sales) {
+    var query = "UPDATE `departments` INNER JOIN `products` ON products.department_name = departments.department_name SET departments.quantity_sold = ?, departments.total_sales = ?  WHERE products.item_id = ?"
+    connection.query(query, [sold, sales, id],
+        function (err, res) { });
+    //connection.end();
 }
