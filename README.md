@@ -9,6 +9,8 @@ The app will take in orders from customers and deplete stock from the store's in
 4. Once the customer has placed the order, application  checks if store has enough of the product to meet the customer's request.
     * If store does have enough of the product, fulfill the customer's order.
     * If not, alert insufficient quantity then prevent the order from going through.
+
+![picture alt](./preview1.png?raw=true "Preview 1")
 - - - -
 **jmzAdmin.js = Manager View**
 - - - -
