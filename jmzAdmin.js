@@ -10,8 +10,8 @@ var connection = mysql.createConnection({
     // Your username
     user: "root",
     // Your password
-    password: "ejrvy1024",
-    database: "jimmazonDB"
+    password: "",
+    database: ""
 });
 connection.connect(function (err) {
     if (err) { throw err; }
